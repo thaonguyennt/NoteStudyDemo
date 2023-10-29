@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AddWordView" customModule="NoteStudyDemo" customModuleProvider="target">
             <connections>
-                <outlet property="bgView" destination="Ext-oU-iCQ" id="qXO-9n-Dsd"/>
+                <outlet property="bgView" destination="MTV-3H-R9a" id="oqv-pA-CBi"/>
+                <outlet property="cancelBtn" destination="MTV-3H-R9a" id="sU5-Ek-d0m"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="hym-tE-eoR"/>
                 <outlet property="krTextField" destination="8xu-7o-c73" id="AzK-RS-fvq"/>
                 <outlet property="saveBtn" destination="MTV-3H-R9a" id="slR-y8-AvG"/>
@@ -40,37 +42,58 @@
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MTV-3H-R9a">
-                            <rect key="frame" x="30" y="168" width="301" height="50"/>
-                            <color key="backgroundColor" red="0.86274509803921573" green="0.36078431372549019" blue="0.43529411764705883" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="50" id="pe6-85-M3g"/>
-                            </constraints>
-                            <fontDescription key="fontDescription" name="Noteworthy-Bold" family="Noteworthy" pointSize="20"/>
-                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                            <state key="normal" title="Save">
-                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </state>
-                            <connections>
-                                <action selector="saveAction:" destination="-1" eventType="touchUpInside" id="Inc-rK-DI4"/>
-                            </connections>
-                        </button>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Of7-6a-0Bv">
+                            <rect key="frame" x="20" y="168" width="321" height="50"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MTV-3H-R9a">
+                                    <rect key="frame" x="0.0" y="0.0" width="150.66666666666666" height="50"/>
+                                    <color key="backgroundColor" red="0.86274509803921573" green="0.36078431372549019" blue="0.43529411764705883" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="50" id="pe6-85-M3g"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" name="Noteworthy-Bold" family="Noteworthy" pointSize="20"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Cancel">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="cancelAction:" destination="-1" eventType="touchUpInside" id="uLz-6y-RFH"/>
+                                        <action selector="saveAction:" destination="-1" eventType="touchUpInside" id="Inc-rK-DI4"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jSM-AM-qFm">
+                                    <rect key="frame" x="170.66666666666663" y="0.0" width="150.33333333333337" height="50"/>
+                                    <color key="backgroundColor" red="0.86274509799999999" green="0.36078431370000003" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="50" id="twR-R4-cLH"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" name="Noteworthy-Bold" family="Noteworthy" pointSize="20"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Save">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="saveAction:" destination="-1" eventType="touchUpInside" id="49n-kX-ToY"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </stackView>
                     </subviews>
                     <color key="backgroundColor" red="1" green="0.8459577881325816" blue="0.94483947036653582" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="8xu-7o-c73" secondAttribute="trailing" constant="20" symbolic="YES" id="2od-7p-b4d"/>
                         <constraint firstItem="8xu-7o-c73" firstAttribute="leading" secondItem="Ext-oU-iCQ" secondAttribute="leading" constant="20" symbolic="YES" id="5iA-hD-qdR"/>
-                        <constraint firstItem="MTV-3H-R9a" firstAttribute="top" secondItem="8xu-7o-c73" secondAttribute="bottom" constant="30" id="5u3-DA-hvq"/>
+                        <constraint firstItem="Of7-6a-0Bv" firstAttribute="top" secondItem="8xu-7o-c73" secondAttribute="bottom" constant="30" id="8vA-A4-djb"/>
                         <constraint firstAttribute="height" constant="230" id="AaI-ok-m6G"/>
                         <constraint firstItem="8xu-7o-c73" firstAttribute="top" secondItem="L5L-om-whA" secondAttribute="bottom" constant="8" id="KZm-S6-8lq"/>
+                        <constraint firstAttribute="trailing" secondItem="Of7-6a-0Bv" secondAttribute="trailing" constant="20" id="M2b-DW-2yp"/>
                         <constraint firstItem="L5L-om-whA" firstAttribute="top" secondItem="rdU-1a-92b" secondAttribute="bottom" constant="20" id="MFE-tG-crW"/>
                         <constraint firstAttribute="trailing" secondItem="L5L-om-whA" secondAttribute="trailing" constant="20" symbolic="YES" id="MN4-GS-tHI"/>
                         <constraint firstItem="L5L-om-whA" firstAttribute="leading" secondItem="Ext-oU-iCQ" secondAttribute="leading" constant="20" symbolic="YES" id="Psd-aZ-WZP"/>
-                        <constraint firstItem="MTV-3H-R9a" firstAttribute="leading" secondItem="Ext-oU-iCQ" secondAttribute="leading" constant="30" id="Yls-Ys-R42"/>
                         <constraint firstAttribute="trailing" secondItem="rdU-1a-92b" secondAttribute="trailing" constant="20" symbolic="YES" id="boO-gp-cat"/>
+                        <constraint firstItem="Of7-6a-0Bv" firstAttribute="leading" secondItem="Ext-oU-iCQ" secondAttribute="leading" constant="20" id="jv7-IT-BpO"/>
                         <constraint firstItem="rdU-1a-92b" firstAttribute="top" secondItem="Ext-oU-iCQ" secondAttribute="top" constant="10" id="m5v-y5-JX9"/>
                         <constraint firstItem="rdU-1a-92b" firstAttribute="leading" secondItem="Ext-oU-iCQ" secondAttribute="leading" constant="20" symbolic="YES" id="oO9-0m-0bJ"/>
-                        <constraint firstAttribute="trailing" secondItem="MTV-3H-R9a" secondAttribute="trailing" constant="30" id="vfQ-qU-hh4"/>
                     </constraints>
                 </view>
             </subviews>
@@ -83,7 +106,7 @@
                 <constraint firstItem="Ext-oU-iCQ" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="gvl-4Z-rGY"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="161.06870229007632" y="229.92957746478874"/>
+            <point key="canvasLocation" x="159.54198473282443" y="229.92957746478874"/>
         </view>
     </objects>
 </document>

@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 protocol AddWordViewDelegete: AnyObject {
+    func cancelAddNewWord()
     func saveWord(vn: String?, kr: String?)
 }
 class AddWordView: UIView {
@@ -15,6 +16,7 @@ class AddWordView: UIView {
     @IBOutlet weak var vnTextField: UITextField!
     @IBOutlet weak var krTextField: UITextField!
     @IBOutlet weak var saveBtn: UIButton!
+    @IBOutlet weak var cancelBtn: UIButton!
     @IBOutlet weak var bgView: UIView!
 
     var parentView: ViewController?
@@ -29,6 +31,14 @@ class AddWordView: UIView {
         super.init(coder: coder)
         setupLayoutView()
     }
+    func resetValue(){
+        vnTextField.text = ""
+        krTextField.text = ""
+    }
+    func setValue(kr: String, vn: String) {
+        vnTextField.text = vn
+        krTextField.text = kr
+    }
     func setupLayoutView(){
         Bundle.main.loadNibNamed("AddWordView", owner: self, options: nil)
         self.addSubview(contentView)
@@ -36,8 +46,12 @@ class AddWordView: UIView {
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         bgView.layer.cornerRadius = 10
         saveBtn.layer.cornerRadius = 10
+        cancelBtn.layer.cornerRadius = 10
     }
     
+    @IBAction func cancelAction(_ sender: Any) {
+        delegete?.cancelAddNewWord()
+    }
     @IBAction func saveAction(_ sender: Any) {
         if let vnText = vnTextField.text, !vnText.isEmpty,
            let krText = krTextField.text, !vnText.isEmpty
