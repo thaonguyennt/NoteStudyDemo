@@ -6,14 +6,20 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
+    var synthesizer = AVSpeechSynthesizer()
+    @IBOutlet weak var bgImage: UIImageView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addWord: UIButton!
+    
     var addView: AddWordView?
+    private var itemSelected: Word?
+    private var currentBackgroundImage: String?
+    private var arrBackgroundImage: [String] = []
     private var arrWords: [Word] = [] {
         didSet {
             tableView.reloadData()
@@ -24,9 +30,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         addWord.layer.cornerRadius = addWord.frame.height / 2
         tableView.delegate = self
         tableView.dataSource = self
-        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
-        tableView.addGestureRecognizer(longPress)
+
         addView = AddWordView(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: .zero))
+        insertBacgroundImage()
         getAllItem()
     }
 
@@ -34,6 +40,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if let addView = addView {
             if !addView.isDescendant(of: view) {
                 self.view.addSubview(addView)
+                addView.parentView = self
                 addView.delegete = self
                 addView.contentView.alpha = 0
                 addView.frame.size = self.view.frame.size
@@ -51,23 +58,36 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
     }
+    func insertBacgroundImage(){
+        for i in 1...15 {
+            arrBackgroundImage.append("bg\(i)")
+        }
+    }
     @IBAction func actionAddWord(_ sender: Any) {
         showAddWord()
         
     }
-    @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
-        if sender.state == .began {
-            let touchPoint = sender.location(in: tableView)
-            if let indexPath = tableView.indexPathForRow(at: touchPoint) {
-                let alert  = UIAlertController(title: "⚠️", message: "Do you want to deleted?", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler: { [weak self] _ in
-                    self?.deleteItem(item: self?.arrWords[indexPath.row])
-                }))
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                present(alert, animated: true)
-            }
-        }
+    @IBAction func checkRandomWord(_ sender: Any) {
+        
     }
+    
+    @IBAction func changeBackGround(_ sender: Any) {
+        var randomImage: String?
+        randomImage = arrBackgroundImage.randomElement()
+        if currentBackgroundImage == randomImage {
+            randomImage = arrBackgroundImage.randomElement()
+        }
+        currentBackgroundImage = randomImage
+        bgImage.image = UIImage(named: randomImage ?? "")
+    }
+    private func textToSpeed(text: String){
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "ko")
+        utterance.rate = 0.1
+        utterance.volume = 1
+        synthesizer.speak(utterance)
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as? CustomCell {
             let data = arrWords[indexPath.row]
@@ -80,15 +100,36 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return arrWords.count
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let word = arrWords[indexPath.row]
-        addView?.setValue(kr: word.kr_language ?? "", vn: word.vn_language ?? "")
-        showAddWord()
+        let kr_word = arrWords[indexPath.row].kr_language
+        textToSpeed(text: kr_word ?? "")
+    }
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        itemSelected = arrWords[indexPath.row]
+        let delete = UIContextualAction(style: .normal, title: "Delete") { [weak self] (action, view, completionHandler) in
+            let alert  = UIAlertController(title: "⚠️", message: "Do you want to deleted?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler: { [weak self] _ in
+                self?.deleteItem(item: self?.arrWords[indexPath.row])
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            self?.present(alert, animated: true)
+           }
+           delete.image = UIImage(systemName: "trash")
+           delete.backgroundColor = .red
+        
+        let edit = UIContextualAction(style: .normal, title: "Edit") {  [weak self] (action, view, completionHandler) in
+            self?.addView?.setValue(kr: self?.itemSelected?.kr_language ?? "", vn: self?.itemSelected?.vn_language ?? "")
+            self?.showAddWord()
+           }
+        edit.image = UIImage(systemName: "pencil")
+        edit.backgroundColor = .blue
+        let swipe = UISwipeActionsConfiguration(actions: [delete, edit])
+        return swipe
     }
 }
 extension ViewController {
     func getAllItem(){
         do {
-            arrWords = try context.fetch(Word.fetchRequest())
+            arrWords = try context.fetch(Word.fetchRequest()).reversed()
             
         } catch {
             print(error.localizedDescription)
@@ -102,7 +143,7 @@ extension ViewController {
         
         do {
             try context.save()
-            getAllItem()
+            arrWords.insert(newItem, at: 0)
         } catch {
             print(error.localizedDescription)
         }
@@ -112,16 +153,18 @@ extension ViewController {
         context.delete(item)
         do {
             try context.save()
-            getAllItem()
+            guard let index = arrWords.firstIndex(of: item) else { return  }
+            arrWords.remove(at: index)
         } catch {
             print(error.localizedDescription)
         }
     }
-    func updateItem(item: Word, kr: String, vn: String ){
-        item.kr_language = kr
-        item.vn_language = vn
+    func updateItem(item: Word?, kr: String?, vn: String? ){
+        item?.kr_language = kr
+        item?.vn_language = vn
         do {
             try context.save()
+            getAllItem()
         } catch {
             print(error.localizedDescription)
         }
@@ -129,9 +172,13 @@ extension ViewController {
 
 }
 extension ViewController: AddWordViewDelegete {
-    func saveWord(vn: String?, kr: String?) {
+    func saveWord(vn: String?, kr: String?, isUpdate: Bool) {
         removeAddView()
-        createItem(kr: kr ?? "", vn: vn ?? "")
+        if isUpdate {
+            updateItem(item: itemSelected, kr: kr, vn: vn)
+        } else {
+            createItem(kr: kr ?? "", vn: vn ?? "")
+        }
     }
     func cancelAddNewWord() {
         removeAddView()
