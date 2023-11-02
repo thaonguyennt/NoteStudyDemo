@@ -23,9 +23,11 @@ class AddWordView: UIView, UITextFieldDelegate {
     
     @IBOutlet weak var vnRecordBtn: UIButton!
     @IBOutlet weak var krRecordBtn: UIButton!
-    @IBOutlet weak var img: UIImageView!
     @IBOutlet weak var loadingImg: UIImageView!
     
+    @IBOutlet weak var img1: UIImageView!
+    @IBOutlet weak var img2: UIImageView!
+    @IBOutlet weak var img3: UIImageView!
     private var timer: Timer?
     private var count: Double = 0.0
     
@@ -114,9 +116,17 @@ class AddWordView: UIView, UITextFieldDelegate {
         }
         print("count: \(count)")
         if currentVNLanguageSelected {
-            vnRecordBtn.setImage(UIImage(systemName: "waveform.and.mic", variableValue: count), for: .normal)
+            if #available(iOS 16.0, *) {
+                vnRecordBtn.setImage(UIImage(systemName: "waveform.and.mic", variableValue: count), for: .normal)
+            } else {
+                // Fallback on earlier versions
+            }
         } else {
-            krRecordBtn.setImage(UIImage(systemName: "waveform.and.mic", variableValue: count), for: .normal)
+            if #available(iOS 16.0, *) {
+                krRecordBtn.setImage(UIImage(systemName: "waveform.and.mic", variableValue: count), for: .normal)
+            } else {
+                // Fallback on earlier versions
+            }
         }
     }
     func stopTimer(){

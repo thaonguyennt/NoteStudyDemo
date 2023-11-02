@@ -33,14 +33,14 @@ class Helper_Audio {
             return completion(false, "Speech recognition is not supported for your current locale.")
         }
         if !myRecognizer.isAvailable {
-            //A recognizer is not available right now
+            //A recognizer is not available right now   
             completion(false, "Speech recognition is not currently available. Check back at a later time.")
         }
         recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { result, error in
             if let result = result {
                 let bestString = result.bestTranscription.formattedString
                 completion(true, bestString)
-            } else if let error = error {
+            } else {
                 completion(false, "There has been a speech recognition error.")
                 
             }

@@ -84,8 +84,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     private func textToSpeed(text: String){
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "ko")
-        utterance.rate = 0.1
-        utterance.volume = 1
         synthesizer.speak(utterance)
     }
     
