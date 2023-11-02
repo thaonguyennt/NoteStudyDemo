@@ -12,6 +12,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var synthesizer = AVSpeechSynthesizer()
+    @IBOutlet weak var searchWord: UISearchBar!
     @IBOutlet weak var bgImage: UIImageView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addWord: UIButton!
@@ -30,7 +31,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         addWord.layer.cornerRadius = addWord.frame.height / 2
         tableView.delegate = self
         tableView.dataSource = self
-
+        searchWord.delegate = self
         addView = AddWordView(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: .zero))
         insertBacgroundImage()
         getAllItem()
@@ -91,7 +92,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as? CustomCell {
             let data = arrWords[indexPath.row]
-            cell.setDataCell(kr: data.kr_language ?? "", vn: data.vn_language ?? "")
+            cell.setDataCell(kr: data.kr_language ?? "", vn: data.vn_language ?? "", imgUrl: data.image ?? "")
             return cell
         }
         return UITableViewCell()
@@ -117,7 +118,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
            delete.backgroundColor = .red
         
         let edit = UIContextualAction(style: .normal, title: "Edit") {  [weak self] (action, view, completionHandler) in
-            self?.addView?.setValue(kr: self?.itemSelected?.kr_language ?? "", vn: self?.itemSelected?.vn_language ?? "")
+            self?.addView?.setValue(kr: self?.itemSelected?.kr_language ?? "", vn: self?.itemSelected?.vn_language ?? "", link: self?.itemSelected?.image ?? "")
             self?.showAddWord()
            }
         edit.image = UIImage(systemName: "pencil")
@@ -135,12 +136,12 @@ extension ViewController {
             print(error.localizedDescription)
         }
     }
-    func createItem(kr: String, vn: String){
+    func createItem(kr: String, vn: String, link: String){
         let newItem = Word(context: context)
         newItem.id = Date()
         newItem.kr_language = kr
         newItem.vn_language = vn
-        
+        newItem.image = link
         do {
             try context.save()
             arrWords.insert(newItem, at: 0)
@@ -159,9 +160,10 @@ extension ViewController {
             print(error.localizedDescription)
         }
     }
-    func updateItem(item: Word?, kr: String?, vn: String? ){
+    func updateItem(item: Word?, kr: String?, vn: String?, link: String?){
         item?.kr_language = kr
         item?.vn_language = vn
+        item?.image = link
         do {
             try context.save()
             getAllItem()
@@ -172,12 +174,12 @@ extension ViewController {
 
 }
 extension ViewController: AddWordViewDelegete {
-    func saveWord(vn: String?, kr: String?, isUpdate: Bool) {
+    func saveWord(vn: String?, kr: String?, link: String?, isUpdate: Bool) {
         removeAddView()
         if isUpdate {
-            updateItem(item: itemSelected, kr: kr, vn: vn)
+            updateItem(item: itemSelected, kr: kr, vn: vn, link: link)
         } else {
-            createItem(kr: kr ?? "", vn: vn ?? "")
+            createItem(kr: kr ?? "", vn: vn ?? "", link: link ?? "")
         }
     }
     func cancelAddNewWord() {
@@ -185,17 +187,48 @@ extension ViewController: AddWordViewDelegete {
     }
    
 }
-
+extension ViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        let searchText = searchText.folding(options: .diacriticInsensitive, locale: .current)
+        var filterData: [Word] = []
+        getAllItem()
+        if !searchText.isEmpty {
+            for word in arrWords {
+                if let vn = word.vn_language, vn.folding(options: .diacriticInsensitive, locale: .current).uppercased().contains(searchText.uppercased())  {
+                    filterData.append(word)
+                }
+            }
+            arrWords = filterData
+        } else {
+            getAllItem()
+        }
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.view.endEditing(true)
+    }
+    func searchText(text: String) {
+        
+    }
+}
 class CustomCell: UITableViewCell {
     
     @IBOutlet weak var vnLb: UILabel!
+    @IBOutlet weak var img: UIImageView!
     @IBOutlet weak var krLb: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        img.layer.cornerRadius = 10
     }
-    func setDataCell(kr: String, vn: String) {
+    func setDataCell(kr: String, vn: String, imgUrl: String) {
         vnLb.text = vn
         krLb.text = kr
+        if let url = URL(string: imgUrl) {
+            img.load(url: url) {}
+        }
+        else{
+            img.image = UIImage(named: "default_image")
+        }
     }
 }

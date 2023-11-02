@@ -19,6 +19,7 @@ extension Word {
     @NSManaged public var id: Date?
     @NSManaged public var kr_language: String?
     @NSManaged public var vn_language: String?
+    @NSManaged public var image: String?
 
 }
 

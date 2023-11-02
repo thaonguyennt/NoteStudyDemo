@@ -7,19 +7,23 @@ PODS:
   - GTMSessionFetcher/Core (3.1.1)
   - GTMSessionFetcher/Full (3.1.1):
     - GTMSessionFetcher/Core
+  - IQKeyboardManagerSwift (6.5.12)
 
 DEPENDENCIES:
   - GoogleAPIClientForREST
+  - IQKeyboardManagerSwift
 
 SPEC REPOS:
   trunk:
     - GoogleAPIClientForREST
     - GTMSessionFetcher
+    - IQKeyboardManagerSwift
 
 SPEC CHECKSUMS:
   GoogleAPIClientForREST: b606c614570575ffccbde27a3ee5e761b169fca4
   GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
+  IQKeyboardManagerSwift: 371b08cb39664fb56030f5345c815a4ffc74bbc0
 
-PODFILE CHECKSUM: 0eb4488fc75053e3b27c2ee55747c4303e8f773c
+PODFILE CHECKSUM: d62e8d1439c49b6f07eef1c5e0f260d1ca5e0f0b
 
 COCOAPODS: 1.12.0

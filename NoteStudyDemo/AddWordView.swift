@@ -11,7 +11,7 @@ import SafariServices
 import WebKit
 protocol AddWordViewDelegete: AnyObject {
     func cancelAddNewWord()
-    func saveWord(vn: String?, kr: String?, isUpdate: Bool)
+    func saveWord(vn: String?, kr: String?, link: String?, isUpdate: Bool)
 }
 class AddWordView: UIView, UITextFieldDelegate {
     @IBOutlet weak var contentView: UIView!
@@ -23,11 +23,8 @@ class AddWordView: UIView, UITextFieldDelegate {
     
     @IBOutlet weak var vnRecordBtn: UIButton!
     @IBOutlet weak var krRecordBtn: UIButton!
-    
-    
-    @IBOutlet weak var img3: UIImageView!
-    @IBOutlet weak var img2: UIImageView!
-    @IBOutlet weak var img1: UIImageView!
+    @IBOutlet weak var img: UIImageView!
+    @IBOutlet weak var loadingImg: UIImageView!
     
     private var timer: Timer?
     private var count: Double = 0.0
@@ -35,6 +32,7 @@ class AddWordView: UIView, UITextFieldDelegate {
     var parentView: ViewController?
     weak var delegete: AddWordViewDelegete?
     private var isUpdate: Bool = false
+    private var linkImg: String?
     var currentVNLanguageSelected: Bool = true
     
     override init(frame: CGRect) {
@@ -50,11 +48,21 @@ class AddWordView: UIView, UITextFieldDelegate {
         isUpdate = false
         vnTextField.text = ""
         krTextField.text = ""
+        img.image = UIImage(named: "default_image")
+        linkImg = nil
     }
-    func setValue(kr: String, vn: String) {
+    func setValue(kr: String, vn: String, link: String) {
+        loadingImg.isHidden = false
         isUpdate = true
         vnTextField.text = vn
         krTextField.text = kr
+        if let url = URL(string: link) {
+            img.load(url: url) { [weak self] in
+                DispatchQueue.main.async {
+                    self?.loadingImg.isHidden = true
+                }
+            }
+        }
     }
     func setupLayoutView(){
         Bundle.main.loadNibNamed("AddWordView", owner: self, options: nil)
@@ -64,9 +72,11 @@ class AddWordView: UIView, UITextFieldDelegate {
         bgView.layer.cornerRadius = 10
         saveBtn.layer.cornerRadius = saveBtn.frame.height / 2
         cancelBtn.layer.cornerRadius = cancelBtn.frame.height / 2
-        vnTextField.delegate = self
+        krTextField.delegate = self
+        img.layer.cornerRadius = 10
+        loadingImg.image = UIImageView.gifImageWithName("loading")
     }
-    
+
     @IBAction func cancelAction(_ sender: Any) {
         Helper_Audio.shared.cancelRecording()
         stopTimer()
@@ -82,7 +92,7 @@ class AddWordView: UIView, UITextFieldDelegate {
            let krText = krTextField.text, !vnText.isEmpty
         
         {
-            delegete?.saveWord(vn: vnText, kr: krText, isUpdate: isUpdate)
+            delegete?.saveWord(vn: vnText, kr: krText, link: linkImg, isUpdate: isUpdate)
         }
         else {
             showAlert(message: "Please Enter Word")
@@ -159,41 +169,20 @@ class AddWordView: UIView, UITextFieldDelegate {
         sender.isSelected = !sender.isSelected
     }
   
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        if textField == vnTextField, let text = textField.text, !text.isEmpty {
-            self.loadImageFromText(text: text)
-        }
-        return true
-    }
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
-        if textField == vnTextField, let text = textField.text, !text.isEmpty {
-            Helper_LoadImage.shared.search(text: text)
-        }
-    }
-}
-extension AddWordView: SFSafariViewControllerDelegate {
-    func loadImageFromText(text: String) {
-        if let url = URL(string: "https://www.google.com/search?q=\(text)&tbm=isch") {
-            let safariViewController = SFSafariViewController(url: url)
-            safariViewController.delegate = self
-            parentView?.present(safariViewController, animated: true)
-        }
-        }
-
-        func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-            controller.dismiss(animated: true)
-
-            // Lấy URL của hình ảnh đầu tiên trong kết quả
-            let webView = controller.view as? WKWebView
-
-            let response = webView?.evaluateJavaScript("document.querySelector('.rg_meta img').src") as? String
-            if let response = response {
-                // Tải xuống hình ảnh
-                let imageData = try? Data(contentsOf: URL(string: response)!)
-                if let imageData = imageData {
-                    // Hiển thị hình ảnh
-                    img1.image = UIImage(data: imageData)
+        if textField == krTextField, let text = textField.text, !text.isEmpty {
+            loadingImg.isHidden = false
+            Helper_LoadImage.shared.search(text: text) {[weak self] value in
+                if let value = value, let url = URL(string: value) {
+                    self?.linkImg = value
+                    self?.img.load(url: url) {
+                        DispatchQueue.main.async {
+                            self?.loadingImg.isHidden = true
+                        }
+                    }
                 }
             }
         }
+    }
 }

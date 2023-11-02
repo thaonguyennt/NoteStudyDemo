@@ -19,6 +19,8 @@
 		444EE2C02AEB9FF40023518B /* AddWordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444EE2BF2AEB9FF40023518B /* AddWordView.swift */; };
 		44B558042AEF8C34002C920F /* Helper_Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B558032AEF8C34002C920F /* Helper_Audio.swift */; };
 		44EA37502AEF64D5002DAFC2 /* Image+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EA374F2AEF64D5002DAFC2 /* Image+Extension.swift */; };
+		44F09BB22AF34C8000BC9312 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F09BB12AF34C8000BC9312 /* Extension.swift */; };
+		44F09BBA2AF3854800BC9312 /* loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = 44F09BB92AF3854800BC9312 /* loading.gif */; };
 		4B4FDB6056B41ED673BCB66F /* Pods_NoteStudyDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D74CB0BDA0A81725B001CF76 /* Pods_NoteStudyDemo.framework */; };
 		6A6B78DB2AEE600100B3C66B /* Word+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6B78D92AEE600100B3C66B /* Word+CoreDataClass.swift */; };
 		6A6B78DC2AEE600100B3C66B /* Word+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6B78DA2AEE600100B3C66B /* Word+CoreDataProperties.swift */; };
@@ -40,6 +42,8 @@
 		444EE2BF2AEB9FF40023518B /* AddWordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWordView.swift; sourceTree = "<group>"; };
 		44B558032AEF8C34002C920F /* Helper_Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper_Audio.swift; sourceTree = "<group>"; };
 		44EA374F2AEF64D5002DAFC2 /* Image+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Extension.swift"; sourceTree = "<group>"; };
+		44F09BB12AF34C8000BC9312 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		44F09BB92AF3854800BC9312 /* loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = loading.gif; sourceTree = "<group>"; };
 		6A6B78D92AEE600100B3C66B /* Word+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Word+CoreDataClass.swift"; sourceTree = "<group>"; };
 		6A6B78DA2AEE600100B3C66B /* Word+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Word+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		C4E707289FF7115008E2D565 /* Pods-NoteStudyDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NoteStudyDemo.release.xcconfig"; path = "Target Support Files/Pods-NoteStudyDemo/Pods-NoteStudyDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -96,12 +100,14 @@
 				4421D8C72AEB621500E98418 /* ViewController.swift */,
 				4421D8C92AEB621500E98418 /* Main.storyboard */,
 				4421D8CF2AEB621600E98418 /* Assets.xcassets */,
+				44F09BB92AF3854800BC9312 /* loading.gif */,
 				444EE2BF2AEB9FF40023518B /* AddWordView.swift */,
 				444EE2BD2AEB9E210023518B /* AddWordView.xib */,
 				4421D8D12AEB621600E98418 /* LaunchScreen.storyboard */,
 				4421D8D42AEB621600E98418 /* Info.plist */,
 				4421D8CC2AEB621500E98418 /* NoteStudyDemo.xcdatamodeld */,
 				44EA374F2AEF64D5002DAFC2 /* Image+Extension.swift */,
+				44F09BB12AF34C8000BC9312 /* Extension.swift */,
 			);
 			path = NoteStudyDemo;
 			sourceTree = "<group>";
@@ -185,6 +191,7 @@
 			files = (
 				444EE2BE2AEB9E210023518B /* AddWordView.xib in Resources */,
 				4421D8D32AEB621600E98418 /* LaunchScreen.storyboard in Resources */,
+				44F09BBA2AF3854800BC9312 /* loading.gif in Resources */,
 				4421D8D02AEB621600E98418 /* Assets.xcassets in Resources */,
 				4421D8CB2AEB621500E98418 /* Main.storyboard in Resources */,
 			);
@@ -243,6 +250,7 @@
 				4421D8C42AEB621500E98418 /* AppDelegate.swift in Sources */,
 				6A6B78DC2AEE600100B3C66B /* Word+CoreDataProperties.swift in Sources */,
 				44EA37502AEF64D5002DAFC2 /* Image+Extension.swift in Sources */,
+				44F09BB22AF34C8000BC9312 /* Extension.swift in Sources */,
 				6A6B78DB2AEE600100B3C66B /* Word+CoreDataClass.swift in Sources */,
 				44B558042AEF8C34002C920F /* Helper_Audio.swift in Sources */,
 				4421D8CE2AEB621500E98418 /* NoteStudyDemo.xcdatamodeld in Sources */,
