@@ -23,18 +23,22 @@ class AddWordView: UIView, UITextFieldDelegate {
     
     @IBOutlet weak var vnRecordBtn: UIButton!
     @IBOutlet weak var krRecordBtn: UIButton!
-    @IBOutlet weak var loadingImg: UIImageView!
     
-    @IBOutlet weak var img1: UIImageView!
-    @IBOutlet weak var img2: UIImageView!
-    @IBOutlet weak var img3: UIImageView!
+    @IBOutlet weak var collectionView: UICollectionView!
+    
     private var timer: Timer?
     private var count: Double = 0.0
+    private var listImages: [String] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
     
     var parentView: ViewController?
     weak var delegete: AddWordViewDelegete?
     private var isUpdate: Bool = false
     private var linkImg: String?
+    private var itemSelected: IndexPath?
     var currentVNLanguageSelected: Bool = true
     
     override init(frame: CGRect) {
@@ -50,21 +54,15 @@ class AddWordView: UIView, UITextFieldDelegate {
         isUpdate = false
         vnTextField.text = ""
         krTextField.text = ""
-        img.image = UIImage(named: "default_image")
         linkImg = nil
+        listImages = []
     }
     func setValue(kr: String, vn: String, link: String) {
-        loadingImg.isHidden = false
         isUpdate = true
         vnTextField.text = vn
         krTextField.text = kr
-        if let url = URL(string: link) {
-            img.load(url: url) { [weak self] in
-                DispatchQueue.main.async {
-                    self?.loadingImg.isHidden = true
-                }
-            }
-        }
+        listImages.append(link)
+     
     }
     func setupLayoutView(){
         Bundle.main.loadNibNamed("AddWordView", owner: self, options: nil)
@@ -75,8 +73,9 @@ class AddWordView: UIView, UITextFieldDelegate {
         saveBtn.layer.cornerRadius = saveBtn.frame.height / 2
         cancelBtn.layer.cornerRadius = cancelBtn.frame.height / 2
         krTextField.delegate = self
-        img.layer.cornerRadius = 10
-        loadingImg.image = UIImageView.gifImageWithName("loading")
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
     }
 
     @IBAction func cancelAction(_ sender: Any) {
@@ -182,17 +181,46 @@ class AddWordView: UIView, UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if textField == krTextField, let text = textField.text, !text.isEmpty {
-            loadingImg.isHidden = false
-            Helper_LoadImage.shared.search(text: text) {[weak self] value in
-                if let value = value, let url = URL(string: value) {
-                    self?.linkImg = value
-                    self?.img.load(url: url) {
-                        DispatchQueue.main.async {
-                            self?.loadingImg.isHidden = true
-                        }
-                    }
-                }
+            Helper_LoadImage.shared.search(text: text) {[weak self] listImages in
+                self?.listImages = listImages ?? []
             }
+        }
+    }
+}
+extension AddWordView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.listImages.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else { return UICollectionViewCell()}
+        if indexPath == itemSelected {
+            cell.updateLayoutSelected()
+        } else {
+            cell.updateLayoutDeselected()
+        }
+        cell.setDataImage(image: listImages[indexPath.row])
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.frame.width / 3 - 10
+        return CGSize(width: width, height: collectionView.frame.height)
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 5
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        itemSelected = indexPath
+        let imageSelected = listImages[indexPath.row]
+        self.linkImg = imageSelected
+        if let cell = collectionView.cellForItem(at:  indexPath) as? ImageCollectionViewCell {
+            cell.updateLayoutSelected()
+        }
+    }
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at:  indexPath) as? ImageCollectionViewCell {
+            cell.updateLayoutDeselected()
         }
     }
 }

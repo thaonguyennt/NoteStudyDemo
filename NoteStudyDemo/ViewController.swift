@@ -223,7 +223,7 @@ class CustomCell: UITableViewCell {
         vnLb.text = vn
         krLb.text = kr
         if let url = URL(string: imgUrl) {
-            img.load(url: url) {}
+            img.load(url: url)
         }
         else{
             img.image = UIImage(named: "default_image")
